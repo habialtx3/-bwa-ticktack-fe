@@ -1,4 +1,12 @@
 <script setup>
+import { useTicketStore } from '@/stores/ticket'
+import { capitalize } from 'lodash'
+import { ref,onMounted} from 'vue'
+import feather from 'feather-icons'
+import { useRoute } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { DateTime } from 'luxon'
+
 // TODO: Import necessary dependencies
 // Hint: You'll need to import from vue, pinia, lodash, feather-icons, luxon, and vue-router
 
@@ -7,6 +15,7 @@
 
 // TODO: Create route instance
 // Hint: Use useRoute()
+const route = useRoute()
 
 // TODO: Create refs for ticket and form
 // Hint: You'll need ticket object and form with status and content fields
@@ -19,6 +28,9 @@ const form = ref({
 // TODO: Get store methods and refs
 // Hint: Destructure success, error, loading from storeToRefs
 // Hint: Destructure fetchTicket and createTicketReply methods
+const ticketStore = useTicketStore()
+const {success,error,loading} = storeToRefs(ticketStore)
+const {fetchTicket, createTicketReply} = ticketStore
 
 // TODO: Implement fetchTicketDetail function
 // Hint: This should fetch ticket details using code from route params

@@ -29,7 +29,7 @@ export const useTicketStore = defineStore("ticket", {
             // 2. Make API call to tickets endpoint with params
             try {
                 const response = await axiosInstance.get( 'ticket',{params})
-                this.tickets = response.data?.data
+                this.tickets = response.data.data
             } catch (error) {
                 this.error = handleError(error)
             } finally {
@@ -44,7 +44,16 @@ export const useTicketStore = defineStore("ticket", {
             // TODO: Implement fetchTicket action
             // Steps:
             // 1. Set loading state
+            this.loading = true
             // 2. Make API call to get ticket details
+            try {
+                const response = await axiosInstance.get(`ticket/${code}`)
+                return response.data.data
+            } catch (error) {
+                this.error = handleError(error)
+            } finally {
+                this.loading = false
+            }
             // 3. Return ticket data
             // 4. Handle error
             // 5. Reset loading state

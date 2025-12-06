@@ -1,7 +1,7 @@
 <script setup>
 // TODO: Import necessary dependencies
 // Hint: You'll need to import from vue, chart.js/auto, pinia, feather-icons, lodash, and luxon
-import { onMounted, watch } from 'vue';
+import { onMounted, watch} from 'vue';
 import  Chart from 'chart.js/auto';
 import { useDashboardStore } from '@/stores/dashboard';
 import { useTicketStore } from '@/stores/ticket';

@@ -1,21 +1,48 @@
 <script setup>
+import { useTicketStore } from '@/stores/ticket';
+import { nextTick, onMounted, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
+import { DateTime } from 'luxon';
+import feather from 'feather-icons'
+import { capitalize, debounce } from 'lodash';
+
+
 // TODO: Import necessary dependencies
 // Hint: You'll need to import from vue, pinia, lodash, feather-icons, and luxon
+
+
 
 // TODO: Initialize ticket store and get necessary refs
 // Hint: Use useTicketStore() and storeToRefs()
 
+const ticketStore = useTicketStore()
+const { tickets } = storeToRefs(ticketStore)
+const { fetchTickets } = ticketStore
+
 // TODO: Create filters ref with search fields
 // Hint: You'll need search, status, priority, and date
 const filters = ref({
+    search: '',
+    status: '',
+    priority: '',
+    date: '',
     // Your filter fields here
 })
 
 // TODO: Implement watch effect on filters
 // Hint: Use debounce and call fetchTickets with updated filters
+watch(filters, debounce(async () => {
+    await fetchTickets(filters.value)
+    nextTick(() => feather.replace())
+
+}, 300), { deep: true })
 
 // TODO: Implement onMounted hook
 // Hint: Fetch initial tickets and initialize feather icons
+onMounted(async () => {
+    await fetchTickets()
+    feather.replace()
+})
 
 </script>
 
