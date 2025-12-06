@@ -1,10 +1,22 @@
 // TODO: Import necessary dependencies
+
+import { axiosInstance } from "@/plugins/axios"
+import router from "@/router"
+import { defineStore } from "pinia"
+import { handleError } from "vue"
+
 // Hint: You'll need pinia, axios instance, error helper, and router
+
 
 export const useTicketStore = defineStore("ticket", {
     state: () => ({
         // TODO: Define your state properties
         // Hint: You'll need tickets array, loading, error, and success states
+        tickets: [],
+        array : null,
+        loading : false,
+        error : null,
+        success : null,
     }),
 
     actions: {
@@ -12,7 +24,17 @@ export const useTicketStore = defineStore("ticket", {
             // TODO: Implement fetchTickets action
             // Steps:
             // 1. Set loading state
+            this.loading = true
+
             // 2. Make API call to tickets endpoint with params
+            try {
+                const response = await axiosInstance.get( 'ticket',{params})
+                this.tickets = response.data?.data
+            } catch (error) {
+                this.error = handleError(error)
+            } finally {
+                this.loading = false
+            }
             // 3. Update tickets state
             // 4. Handle error
             // 5. Reset loading state

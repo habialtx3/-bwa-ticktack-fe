@@ -1,21 +1,90 @@
 <script setup>
 // TODO: Import necessary dependencies
 // Hint: You'll need to import from vue, chart.js/auto, pinia, feather-icons, lodash, and luxon
+import { onMounted, watch } from 'vue';
+import  Chart from 'chart.js/auto';
+import { useDashboardStore } from '@/stores/dashboard';
+import { useTicketStore } from '@/stores/ticket';
+import { storeToRefs } from 'pinia';
+import feather from 'feather-icons'
+import { capitalize } from 'lodash';
+import { DateTime } from 'luxon';
 
 // TODO: Initialize dashboard store and get necessary refs
 // Hint: Use useDashboardStore() and storeToRefs()
+const dashboardStore = useDashboardStore()
+const { statistic } = storeToRefs(dashboardStore)
+const { fetchStatistics } = dashboardStore
 
 // TODO: Initialize ticket store and get necessary refs
 // Hint: Use useTicketStore() and storeToRefs()
+const ticketsStore = useTicketStore()
+const { tickets } = storeToRefs(ticketsStore)
+const { fetchTickets } = ticketsStore
 
 // TODO: Create toggleTicketMenu function
 // Hint: This should toggle the showMenu property of a ticket
+const toggleTicketMenu = (ticket) => {
+    ticket.showMenu = !ticket.showMenu
+}
+
 
 // TODO: Create chart variable and watch effect
 // Hint: Watch statistic changes and update chart data
+let chart = null
+watch(statistic, () => {
+    if (statistic.value && chart) {
+        chart.data.datasets[0].data = [
+            statistic.value.status_distribution?.open,
+            statistic.value.status_distribution?.onprogress,
+            statistic.value.status_distribution?.resolved,
+            statistic.value.status_distribution?.rejected,
+        ]
+    }
+})
+
 
 // TODO: Implement onMounted hook
 // Hint: Fetch tickets and statistics, initialize chart with status distribution data, initialize feather icons
+onMounted(async () => {
+    await fetchTickets()
+    await fetchStatistics()
+
+    const statusCtx = document.getElementById('statusChart')?.getContext('2d')
+
+    if (statusCtx && statistic.value) {
+        chart = new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['open', 'onprogress', 'resolved', 'rejected'],
+                datasets: [{
+                    data: [
+                        statistic.value.status_distribution?.open,
+                        statistic.value.status_distribution?.onprogress,
+                        statistic.value.status_distribution?.resolved,
+                        statistic.value.status_distribution?.rejected,
+                    ],
+                    backgroundColor: [
+                        '#3B82F6',
+                        '#F59E08',
+                        '#180981',
+                        '#EF4444',
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                cutout: '70%'
+            },
+        })
+    }
+    feather.replace()
+})
 
 </script>
 
