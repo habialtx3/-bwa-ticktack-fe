@@ -1,14 +1,25 @@
 <script setup>
 // TODO: Import necessary dependencies
 // Hint: You'll need to import from vue, pinia, feather-icons
+import { ref, onMounted, nextTick } from 'vue';
+import { storeToRefs } from 'pinia';
+import feather from 'feather-icons'
+import { useTicketStore } from '@/stores/ticket';
 
 // TODO: Initialize ticket store and get necessary refs
 // Hint: Use useTicketStore() and storeToRefs()
+const ticketStore = useTicketStore()
+const {success, error ,loading} = storeToRefs(ticketStore)
+const {fetchTicket,createTicket} = ticketStore
 
 // TODO: Create form ref with ticket fields
 // Hint: You'll need title, description, priority
 const form = ref({
     // Your form fields here
+    title : '',
+    priority : '',
+    description : '',
+
 })
 
 // TODO: Implement handleSubmit function
@@ -16,12 +27,15 @@ const form = ref({
 // and handle any errors
 const handleSubmit = async () => {
     // Your code here
+    await createTicket(form.value)
 }
 
 // TODO: Implement onMounted hook
 // Hint: Initialize feather icons
 onMounted(async () => {
     // Your code here
+    await nextTick()
+    feather.replace()
 })
 </script>
 

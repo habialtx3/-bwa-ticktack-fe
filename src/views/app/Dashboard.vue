@@ -33,9 +33,9 @@ watch(filters, debounce(async () => {
 
 // TODO: Implement onMounted hook
 // Hint: Fetch initial tickets and initialize feather icons
-onMounted(async()=>{
+onMounted(async () => {
     await fetchTickets()
-    feather.replace()
+    nextTick(() => feather.replace())
 })
 
 </script>
@@ -118,8 +118,16 @@ onMounted(async()=>{
                             <h3 class="text-lg font-semibold text-gray-800">{{ ticket.title }}</h3>
                             <span
                                 class="px-3 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full">Open</span>
-                            <span
-                                class="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full">Tinggi</span>
+                            <span :class="{
+                                'px-3 py-1 text-xs font-medium rounded-full': true,
+                                'px-3 py-1 text-xs font-medium bg-green-100 rounded-full': ticket.priority === 'low',
+                                'px-3 py-1 text-xs font-medium bg-yellow-100 rounded-full': ticket.priority  === 'medium',
+                                'px-3 py-1 text-xs font-medium bg-red-300 rounded-full' : ticket.priority === 'high',
+                            }">
+
+                                {{ ticket.priority === 'low' ? 'Rendah' : ticket.priority === 'medium' ? 'Sedang' :
+                                    'Tinggi' }}
+                            </span>
                         </div>
                         <p class="text-sm text-gray-500 mt-1">#{{ ticket.code }} • Dibuat pada {{
                             DateTime.fromISO(ticket.created_at).toFormat('dd MMMM yyyy, HH:mm') }}</p>

@@ -64,7 +64,19 @@ export const useTicketStore = defineStore("ticket", {
             // TODO: Implement createTicket action
             // Steps:
             // 1. Set loading state
+            this.loading = true
             // 2. Make API call to create ticket
+            try {
+                const response = await axiosInstance.post('ticket', payload)
+
+                const ticket = response.data.data
+                router.push({ name: 'app.dashboard' })
+
+            } catch (error) {
+                this.error = handleError(error)
+            } finally {
+                this.loading = false
+            }
             // 3. Set success message
             // 4. Redirect to dashboard
             // 5. Handle error
@@ -81,7 +93,6 @@ export const useTicketStore = defineStore("ticket", {
                 const response = await axiosInstance.post(`ticket-reply/${code}`, payload)
                 this.success = response.data.message
 
-                return response.data.data
             } catch (error) {
                 this.error = handleError(error)
             } finally {
