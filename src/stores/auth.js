@@ -3,7 +3,7 @@
 import { axiosInstance } from "@/plugins/axios"
 import router from "@/router"
 import { defineStore } from "pinia"
-import { handleError } from "vue"
+import { handleError } from "@/helpers/errorHelper"
 import Cookies from "js-cookie"
 
 export const useAuthStore = defineStore("auth", {
@@ -30,6 +30,7 @@ export const useAuthStore = defineStore("auth", {
             // Steps:
             // 1. Set loading state 
             this.loading = true
+            this.error = null
             // 2. Make API call to login endpoint
             try {
                 const response = await axiosInstance.post('/login', credentials)
@@ -57,7 +58,22 @@ export const useAuthStore = defineStore("auth", {
             // TODO: Implement register action
             // Steps:
             // 1. Set loading state
+            this.loading = true
             // 2. Make API call to register endpoint
+            try {
+                const response = await axiosInstance.post('register',credentials)
+                this.success = response.data.message
+                const token = response.data.data.token
+
+                Cookies.set('token',token)
+
+                router.push({name : 'app.dashboard'})
+            } catch (error) {
+                this.error = handleError(error)
+                
+            } finally {
+                this.loading = false
+            }
             // 3. Store token in cookies
             // 4. Handle success/error
             // 5. Redirect user
