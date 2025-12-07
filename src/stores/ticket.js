@@ -70,6 +70,8 @@ export const useTicketStore = defineStore("ticket", {
                 const response = await axiosInstance.post('ticket', payload)
 
                 const ticket = response.data.data
+                this.success = response.data.message
+
                 router.push({ name: 'app.dashboard' })
 
             } catch (error) {
